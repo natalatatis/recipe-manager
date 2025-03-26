@@ -152,7 +152,7 @@ const RecipesList = () => {
             // Display mode
             <>
               <ListItemText
-                primary={recipe.name}
+                primary={recipe.title}
                 secondary={`Description: ${recipe.description}`}
               />
               {recipe.imageUrl && (

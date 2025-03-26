@@ -6,7 +6,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const AddRecipe = () => {
   //states to store the values from the user
-  const [name, setName] = useState("");
+  const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
 
@@ -17,21 +17,22 @@ const AddRecipe = () => {
       let imageUrl = "";
 
       //if there's an image, we upload it to firebase storage
-      if (image) {
+      if (image && image.name) {
         const imageRef = ref(storage, `recipes/${image.name}`);
+
         await uploadBytes(imageRef, image);
         imageUrl = await getDownloadURL(imageRef);
       }
 
       //add recipe to firestore with the image url
       await addDoc(collection(db, "recipes"), {
-        name,
+        title,
         description,
         imageUrl,
       });
 
       //clean everything
-      setName("");
+      setTitle("");
       setDescription("");
       setImage(null);
     } catch (err) {
@@ -49,8 +50,8 @@ const AddRecipe = () => {
         {/* Input field fot the recipe name */}
         <TextField
           label="Recipe name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           required
         />
         {/* Input field fot the description */}
