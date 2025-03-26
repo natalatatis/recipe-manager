@@ -11,6 +11,7 @@ function App() {
         RecipePal
       </Typography>
       <AddRecipe />
+      <RecipesList />
     </Container>
   );
 }

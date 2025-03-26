@@ -21,8 +21,10 @@ import EditIcon from "@mui/icons-material/Edit";
 import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import { storage } from "../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const RecipesList = () => {
+  // State variables for managing recipes and editing states
   const [recipes, setRecipes] = useState([]);
   const [editingRecipeId, setEditingRecipeId] = useState(null);
   const [editName, setEditName] = useState("");
@@ -30,6 +32,7 @@ const RecipesList = () => {
   const [image, setImage] = useState(null);
   const [imageUrl, setImageUrl] = useState("");
 
+  // Fetch recipes from firestore and listen for real-time updates
   useEffect(() => {
     const colRef = collection(db, "recipes");
     const unsubscribe = onSnapshot(colRef, (snapshot) => {
@@ -37,12 +40,13 @@ const RecipesList = () => {
         id: doc.id,
         ...doc.data(),
       }));
-      setProducts(recipesData);
+      setRecipes(recipesData);
     });
 
-    return () => unsubscribe();
+    return () => unsubscribe(); // Cleanup function to unsubscribe from Firestore updates
   }, []);
 
+  // Enable editing mode and set current recipe data
   const handleEdit = (recipe) => {
     setEditingRecipeId(recipe.id);
     setEditName(recipe.name);
@@ -50,19 +54,21 @@ const RecipesList = () => {
     setImageUrl(recipe.imageUrl || "");
   };
 
+  // Save edited recipe to Firestore
   const handleSave = async (recipeId) => {
     try {
       let updatedData = { name: editName, description: editDescription };
 
-      //Upload new image to Firebase storage
+      // If a new image file is selected, we upload the new image
       if (image) {
-        const imageRed = ref(storage, `recipes/${image.name}`);
+        const imageRef = ref(storage, `recipes/${image.name}`);
         await uploadBytes(imageRef, image);
         const url = await getDownloadURL(imageRef);
         updatedData = { ...updatedData, imageUrl: url };
       }
 
-      const recipeRef = doc(db, "products", recipeId);
+      // Update Firestore document
+      const recipeRef = doc(db, "recipes", recipeId);
       await updateDoc(recipeRef, updatedData);
       setEditingRecipeId(null);
       setImage(null);
@@ -72,12 +78,14 @@ const RecipesList = () => {
     }
   };
 
+  // Cancel editing mode
   const handleCancel = () => {
     setEditingRecipeId(null);
     setImage(null);
     setImageUrl("");
   };
 
+  // Delete a recipe from Firestore
   const handleDelete = async (recipeId) => {
     try {
       await deleteDoc(doc(db, "recipes", recipeId));
@@ -86,6 +94,7 @@ const RecipesList = () => {
     }
   };
 
+  // Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -97,7 +106,8 @@ const RecipesList = () => {
     <List>
       {recipes.map((recipe) => (
         <ListItem key={recipe.id}>
-          {editingRecipeIdId === recipe.id ? (
+          {editingRecipeId === recipe.id ? (
+            // Editing mode
             <Box
               sx={{
                 display: "flex",
@@ -116,7 +126,7 @@ const RecipesList = () => {
                 label="Description"
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
-                fullWid
+                fullWidth
               />
               <Button variant="contained" component="label">
                 Upload Image
@@ -139,16 +149,17 @@ const RecipesList = () => {
               </IconButton>
             </Box>
           ) : (
+            // Display mode
             <>
               <ListItemText
                 primary={recipe.name}
-                secondary={`Description: ${recipe.price}`}
+                secondary={`Description: ${recipe.description}`}
               />
               {recipe.imageUrl && (
                 <img
                   src={recipe.imageUrl}
                   alt="Recipe"
-                  style={{ width: 50, height: 50 }}
+                  style={{ width: 50, height: 50, objectFit: "cover" }}
                 />
               )}
 
