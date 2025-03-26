@@ -3,7 +3,7 @@ React application that integrates Firebase Firestore to manage a list of recipes
 
 ## 🔗 Live Preview
 Check out the live preview on CodeSandbox:  
-[Firebase Auth App - CodeSandbox](https://codesandbox.io/p/sandbox/firestore-recipe-manager-jm2jk3)
+[Recipe Manager - CodeSandbox](https://codesandbox.io/p/sandbox/firestore-recipe-manager-jm2jk3)
 
 ## 📌 Features
 - Add a new recipe
