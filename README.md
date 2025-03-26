@@ -31,7 +31,7 @@ npm install
 npm start
 ```
 
-##🚀 Usage
+## 🚀 Usage
 - Write the name of your recipe and the steps needed (or any description you want).
 - Select an image (optional)
 - Click "Add Recipe"
