@@ -116,18 +116,21 @@ const RecipesList = () => {
                 gap: 1,
               }}
             >
+              {/*Name input*/}
               <TextField
                 label="Recipe Name"
                 value={editName}
                 onChange={(e) => setEditName(e.target.value)}
                 fullWidth
               />
+              {/*Description input*/}
               <TextField
                 label="Description"
                 value={editDescription}
                 onChange={(e) => setEditDescription(e.target.value)}
                 fullWidth
               />
+              {/*Upload image button*/}
               <Button variant="contained" component="label">
                 Upload Image
                 <input type="file" hidden onChange={handleImageChange} />
@@ -141,6 +144,7 @@ const RecipesList = () => {
                 />
               )}
 
+              {/*Buttons to edit or delete recipe */}
               <IconButton onClick={() => handleSave(recipe.id)}>
                 <SaveIcon />
               </IconButton>
@@ -155,14 +159,16 @@ const RecipesList = () => {
                 primary={recipe.title}
                 secondary={`Description: ${recipe.description}`}
               />
+              {/*Image preview */}
               {recipe.imageUrl && (
                 <img
                   src={recipe.imageUrl}
                   alt="Recipe"
-                  style={{ width: 50, height: 50, objectFit: "cover" }}
+                  style={{ width: 150, height: 130, objectFit: "cover" }}
                 />
               )}
 
+              {/*Buttons to edit or delete recipe */}
               <IconButton onClick={() => handleEdit(recipe)}>
                 <EditIcon />
               </IconButton>

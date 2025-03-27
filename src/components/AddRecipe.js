@@ -9,6 +9,7 @@ const AddRecipe = () => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   //handles adding a new recipe
   const handleAddRecipe = async (e) => {
@@ -35,8 +36,18 @@ const AddRecipe = () => {
       setTitle("");
       setDescription("");
       setImage(null);
+      setImagePreview(null);
     } catch (err) {
       console.error("Error adding recipe: ", err);
+    }
+  };
+
+  //Handles image preview section
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImage(file);
+      setImagePreview(URL.createObjectURL(file));
     }
   };
 
@@ -66,14 +77,16 @@ const AddRecipe = () => {
         {/*Button for adding an image*/}
         <Button variant="contained" component="label">
           Upload Image
-          <input
-            type="file"
-            hidden
-            onChange={(e) => setImage(e.target.files[0])}
-          />
+          <input type="file" hidden onChange={handleImageChange} />
         </Button>
         {/*Display the image*/}
-        {image && <p>{image.name}</p>}
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Recipe"
+            style={{ width: 150, height: 130, objectFit: "cover" }}
+          />
+        )}
         {/*Button for adding the whole recipe*/}
         <Button type="submit" variant="contained" color="primary">
           Add Recipe
